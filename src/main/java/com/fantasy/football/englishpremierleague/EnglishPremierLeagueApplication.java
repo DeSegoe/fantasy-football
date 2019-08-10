@@ -19,11 +19,11 @@ public class EnglishPremierLeagueApplication {
     @Autowired
     private LeagueDetailsPersistenceService leagueDetailsPersistenceService;
 
-    @Scheduled(fixedDelay = 1000*60*5L)
+    @Scheduled(fixedDelay = 1000*60*60*24L)
     private void downloadAndPersistData() {
         try {
             LeagueSummary leagueSummary = fantasyFootballDataSource.retrieveLeagueDetails();
-            leagueDetailsPersistenceService.clearAll();
+            //leagueDetailsPersistenceService.clearAll();
             leagueDetailsPersistenceService.saveAll(leagueSummary);
         }
         catch(Exception e) {

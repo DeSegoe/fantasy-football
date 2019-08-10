@@ -46,7 +46,7 @@ public class ClientFactory {
     public DynamoDB createDynamoDbClient() {
         AmazonDynamoDB client =
                 AmazonDynamoDBClientBuilder.standard()
-                        .withCredentials(new EnvironmentVariableCredentialsProvider())
+                       // .withCredentials(new EnvironmentVariableCredentialsProvider())
                         .withRegion(Regions.US_EAST_2)
                         .build();
 
