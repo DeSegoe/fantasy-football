@@ -6,6 +6,8 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.sns.AmazonSNSAsync;
+import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder;
 import com.fantasy.football.englishpremierleague.FantasyFootballDataSource;
 import com.fantasy.football.englishpremierleague.factories.clients.model.LeagueSummary;
 import com.google.gson.Gson;
@@ -46,10 +48,18 @@ public class ClientFactory {
     public DynamoDB createDynamoDbClient() {
         AmazonDynamoDB client =
                 AmazonDynamoDBClientBuilder.standard()
-                       // .withCredentials(new EnvironmentVariableCredentialsProvider())
+                        .withCredentials(new EnvironmentVariableCredentialsProvider())
                         .withRegion(Regions.US_EAST_2)
                         .build();
 
         return new DynamoDB(client);
+    }
+
+    @Bean()
+    public AmazonSNSAsync createSnsClient() {
+        return AmazonSNSAsyncClientBuilder.standard()
+                .withCredentials(new EnvironmentVariableCredentialsProvider())
+                .withRegion(Regions.US_EAST_2)
+                .build();
     }
 }

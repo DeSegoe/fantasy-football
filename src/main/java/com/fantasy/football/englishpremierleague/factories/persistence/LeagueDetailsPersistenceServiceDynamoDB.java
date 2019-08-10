@@ -6,6 +6,8 @@ import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
 import com.fantasy.football.englishpremierleague.factories.clients.model.LeagueSummary;
 import com.fantasy.football.englishpremierleague.factories.clients.model.TeamSummary;
 import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,13 +16,11 @@ import java.util.*;
 
 import java.util.function.Function;
 
+@Component
 public class LeagueDetailsPersistenceServiceDynamoDB implements LeagueDetailsPersistenceService {
 
+    @Autowired
     private DynamoDB dynamoDB;
-
-    public LeagueDetailsPersistenceServiceDynamoDB(DynamoDB dynamoDB) {
-        this.dynamoDB = dynamoDB;
-    }
 
     @Override
     public boolean saveAll(LeagueSummary leagueSummary) {
