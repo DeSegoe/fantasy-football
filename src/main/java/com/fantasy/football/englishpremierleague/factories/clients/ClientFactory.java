@@ -32,7 +32,8 @@ public class ClientFactory {
             @Override
             public LeagueSummary retrieveLeagueDetails() {
                 ClientResponse response =
-                        client.resource(host).path("bootstrap-static").accept(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);System.out.println(response.getStatus());
+                        client.resource(host).path("bootstrap-static/").accept(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
+                System.out.println(response.getStatus());
 
                 if (response.getStatus()==200) {
                     return gson.fromJson(response.getEntity(String.class),LeagueSummary.class);
