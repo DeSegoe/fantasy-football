@@ -3,6 +3,7 @@ package com.fantasy.football.englishpremierleague.persistence;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.ScanSpec;
 import com.fantasy.football.englishpremierleague.factories.clients.model.LeagueSummary;
+import com.fantasy.football.englishpremierleague.factories.clients.model.PlayerSummary;
 import com.fantasy.football.englishpremierleague.factories.clients.model.TeamSummary;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,27 @@ public class LeagueDetailsPersistenceServiceDynamoDB implements LeagueDetailsPer
         return storeLeagueSummaryDetails(leagueSummary) && storePlayerDetails(leagueSummary);
     }
 
+    @Override
+    public PlayerSummary[] getAll() {
+        Table table = dynamoDB.getTable("latest-player-data");
+        Iterator<Item> iterator = table.scan(new ScanSpec()).iterator();
+        Gson gson = new Gson();
+        List<PlayerSummary> playerSummaries = new ArrayList<>();
+
+        while (iterator.hasNext()) {
+            PlayerSummary playerSummary = gson.fromJson(iterator.next().toJSON(),PlayerSummary.class);
+            playerSummaries.add(playerSummary);
+        }
+
+        return playerSummaries.toArray(new PlayerSummary[0]);
+    }
+
     private boolean storeLeagueSummaryDetails(LeagueSummary leagueSummary) {
         try {
             Table table = dynamoDB.getTable("fantasy-football-league-data");
 
             String retrievalDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now());
             String dayOfYear = DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDate.now());
-
-            Gson gson = new Gson();
 
             Function<Map, Map> removeNullValues = map -> {
                 Set<String> keys = new HashSet<>(map.keySet());
@@ -43,6 +57,8 @@ public class LeagueDetailsPersistenceServiceDynamoDB implements LeagueDetailsPer
                 }
                 return map;
             };
+
+            Gson gson = new Gson();
 
             Function<Object, Map> convertObjectToMap = object ->
                     object == null ? null : removeNullValues.apply(gson.fromJson(gson.toJson(object), Map.class));
